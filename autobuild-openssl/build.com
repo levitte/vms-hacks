@@ -22,9 +22,9 @@ $	loop0:
 $	    d = f$search("openssl-SNAP-*.DIR",1)
 $	    if d .eqs. "" then goto endloop0
 $	    d = f$parse(d,,,"NAME")
-$	    ! delete/log/tree [.'d'...]*.*;*
-$	    ! set security/prot=(o:d) 'd'.DIR
-$	    ! delete/log 'd'.DIR;
+$	    delete/log/tree [.'d'...]*.*;*
+$	    set security/prot=(o:d) 'd'.DIR
+$	    delete/log 'd'.DIR;
 $	    goto loop0
 $	endloop0:
 $
@@ -145,6 +145,7 @@ $	! P5	install dir
 $	! P6	log file
 $	! P7	config arguments
 $	execute_line := mms/macro=("""DESTDIR"""='P5') install
+$	report_state := SUCCESS
 $	next_state := REPORT
 $	goto execute
 $
@@ -172,6 +173,7 @@ $	set on
 $
 $	if (sev .and. 1) .ne. 1
 $	then
+$	    report_state := FAILURE
 $	    next_state := REPORT
 $	endif
 $
@@ -180,7 +182,7 @@ $	set default 'here'
 $	if next_state .eqs. "REPORT"
 $	then
 $	    submit 'this' /queue='build_queue_MAIL' -
-		   /para=('P1','next_state','P6',"OpenSSL build of ''name' on ''arch' with config: ''P7'")
+		   /para=('P1','next_state','P6',"''report_state': OpenSSL build of ''name' on ''arch' with config: ''P7'")
 $	else
 $	    submit 'this' /queue='P1' -
 		   /para=('P1','next_state',"''P3'","''P4'",-
