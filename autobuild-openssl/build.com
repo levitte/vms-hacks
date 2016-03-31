@@ -4,7 +4,7 @@ $	this = f$environment("PROCEDURE")
 $
 $	! Set up defaults
 $
-$	configfile = f$parse("CONFIG.COM",this,,,"SYNTAX_ONLY")
+$	configfile = f$parse("CONFIG.COM;",this,,,"SYNTAX_ONLY") - ";"
 $	@'configfile'
 $
 $	if f$mode() .nes. "BATCH" then goto exit
