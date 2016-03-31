@@ -192,6 +192,6 @@ $	exit
 $
 $ exit:
 $	set default 'here'
-$	submit 'this' /queue='build_queue_DISPATCH'/after="tomorrow+08:00" -
+$	submit 'this' /queue='build_queue_DISPATCH'/after="tomorrow+09:00" -
 	       /para=('build_queue_DISPATCH',START)
 $	exit
