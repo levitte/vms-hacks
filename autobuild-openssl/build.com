@@ -52,7 +52,7 @@ $	odir = name - ".tar.gz"
 $	oname = odir + ".tar-gz"
 $	wget "-O" "''oname'" "http://ftp.openssl.org/snapshot/''name'"
 $
-$	gzip -d "''oname'"
+$	gzip -f -d "''oname'"
 $	oname = oname - "-gz"
 $	tar -xvf "''oname'"
 $
