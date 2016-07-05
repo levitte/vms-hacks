@@ -1,6 +1,7 @@
 $	build_downloaddir     :== user:[levitte.downloads]
 $	build_builddir        :== program:[levitte-builds.openssl]
 $	build_installdir      :== program:[levitte-builds._install]
+$	build_openssldir      :== program:[levitte-builds._common]
 $	build_report_recipient == "levitte@openssl.org"
 $
 $	build_platforms       :== ALPHA IA64

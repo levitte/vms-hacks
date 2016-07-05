@@ -75,22 +75,39 @@ $
 $		set default 'build_builddir'
 $		set default [.'platform'.config'confignum']
 $		builddir = f$environment("default")
+$		set noon
+$		create/dir []
+$		delete/log/tree [...]*.*;*
+$		set on
 $
 $		set default 'build_installdir'
 $		set default [.'platform'.config'confignum']
 $		instdir = f$environment("default")
+$		set noon
+$		create/dir []
+$		delete/log/tree [...]*.*;*
+$		set on
 $
-$		logfile := 'build_builddir''platform'_config'confignum'.log
+$		set default 'build_openssldir'
+$		set default [.'platform'.config'confignum']
+$		ossldir = f$environment("default")
+$		set noon
+$		create/dir []
+$		delete/log/tree [...]*.*;*
+$		set on
+$
 $		set noon
 $		create/dir 'build_builddir'
+$		logfile := 'build_builddir''platform'_config'confignum'.log
 $		open/write log 'logfile'
 $		close log
 $		purge 'logfile'
 $		set on
 $
+$		config = "''config' --prefix=''instdir' --openssldir=''ossldir'"
 $		submit 'this' /queue='queue' -
 		       /para=('queue',-
-			      "CONFIG",'srcdir','builddir','instdir','logfile',-
+			      "CONFIG",'srcdir','builddir','logfile',-
 			      "''config'")
 $		confignum = confignum + 1
 $		goto loop2
@@ -103,27 +120,17 @@ $
 $ CONFIG:
 $	! P3	source dir
 $	! P4	build dir
-$	! P5	install dir
-$	! P6	log file
-$	! P7	config arguments
-$	builddir_pref = p4 - "]"
-$	instdir_pref = p5 - "]"
-$	set noon
-$	create/dir 'builddir_pref']
-$	delete/log/tree 'builddir_pref'...]*.*;*
-$	create/dir 'instdir_pref']
-$	delete/log/tree 'instdir_pref'...]*.*;*
-$
-$	execute_line := @'p3'config 'p7'
+$	! P5	log file
+$	! P6	config arguments
+$	execute_line := @'p3'config 'p6'
 $	next_state := BUILD
 $	goto execute
 $
 $ BUILD: 
 $	! P3	source dir
 $	! P4	build dir
-$	! P5	install dir
-$	! P6	log file
-$	! P7	config arguments
+$	! P5	log file
+$	! P6	config arguments
 $	execute_line := mms
 $	next_state := TEST
 $	goto execute
@@ -131,9 +138,8 @@ $
 $ TEST:	
 $	! P3	source dir
 $	! P4	build dir
-$	! P5	install dir
-$	! P6	log file
-$	! P7	config arguments
+$	! P5	log file
+$	! P6	config arguments
 $	execute_line := mms test
 $	next_state := INSTALL
 $	goto execute
@@ -141,10 +147,18 @@ $
 $ INSTALL: 
 $	! P3	source dir
 $	! P4	build dir
-$	! P5	install dir
-$	! P6	log file
-$	! P7	config arguments
-$	execute_line := mms/macro=("""DESTDIR"""='P5') install
+$	! P5	log file
+$	! P6	config arguments
+$	execute_line := mms install
+$	next_state := CHECK_INSTALL
+$	goto execute
+$
+$ CHECK_INSTALL: 
+$	! P3	source dir
+$	! P4	build dir
+$	! P5	log file
+$	! P6	config arguments
+$	execute_line := mms check_install
 $	report_state := SUCCESS
 $	next_state := REPORT
 $	goto execute
@@ -159,7 +173,7 @@ $ execute:
 $	set noon
 $
 $	set default 'P4'
-$	open/append/share=read log 'P6'
+$	open/append/share=read log 'P5'
 $
 $	write log "$ ''execute_line'"
 $	spawn/wait/out=spawn.log 'execute_line'
@@ -182,7 +196,7 @@ $	set default 'here'
 $	if next_state .eqs. "REPORT"
 $	then
 $	    submit 'this' /queue='build_queue_MAIL' -
-		   /para=('P1','next_state','P6',"''report_state': OpenSSL build of ''name' on ''arch' with config: ''P7'")
+		   /para=('P1','next_state','P5',"''report_state': OpenSSL build of ''name' on ''arch' with config: ''P6'")
 $	else
 $	    submit 'this' /queue='P1' -
 		   /para=('P1','next_state',"''P3'","''P4'",-
