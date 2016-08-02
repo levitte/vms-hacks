@@ -1,0 +1,128 @@
+{-
+ use Config;
+ use File::Spec::Functions;
+ use File::Basename;
+
+ # The arch name that POLYCENTER uses
+ sub vms_arch {
+     my %translations = ( "VMS_VAX"  => "VAXVMS",
+                          "VMS_AXP"  => "AXPVMS",
+                          "VMS_IA64" => "I64VMS" );
+     return $translations{$Config{archname}};
+ }
+
+ # The arch as returned by F$GETSYI("ARCH_NAME")
+ sub vms_arch2 {
+     my %translations = ( "VMS_VAX"  => "VAX",
+                          "VMS_AXP"  => "Alpha",
+                          "VMS_IA64" => "IA64" );
+     return $translations{$Config{archname}};
+ }
+
+ sub vstring1 {
+     my @vattribs = split(/-/, $config{version});
+     my @vnums = split(/\./, $vattribs[0]);
+     my $type = ord 'V';
+
+     if (scalar @vattribs > 1) {
+         if ($vattribs[1] =~ m|^pre(\d+)$|) {
+             $type = 64 + $1;
+         } else {
+             $type = ord 'T';
+         }
+     }
+
+     if ($vnums[2] eq "0") {
+         return sprintf "%c%d.%d", $type, @vnums;
+     } else {
+         return sprintf "%c%d.%d-%d", $type, @vnums;
+     }
+ }
+ sub vstring2 {
+     my @vattribs = split(/-/, $config{version});
+     my @vnums = split(/\./, $vattribs[0]);
+     return sprintf "%02d%02d", @vnums;
+ }
+-}=product Levitte {- vms_arch() -} OPENSSL {- vstring1() -} Full
+1 'PRODUCT
+=prompt OpenSSL for OpenVMS {- vstring1() -} (based on OpenSSL {- $config{version} -})
+1 'NOTICE
+=prompt Copyright 1998-2016 The OpenSSL Project.  All rights reserved.
+1 'LICENSE
+=prompt OpenSSL license, allowing free use of this product.
+1 'PRODUCER
+=prompt Richard Levitte, for the OpenSSL Project.
+1 NEED{- vms_arch() -}84
+=prompt OpenVMS V8.4 or later for {- vms_arch2() -} is required.  Aborting
+1 RUN_IVP
+=prompt Run the installation verification procedure?
+Running the installation verification procedure is optional.  The
+procedure takes a very short while, checking that basic function
+works correctly.  If not run during installation, this procedure
+should be run as part of the post installation tasks.
+
+
+1 POST
+=prompt Post installation tasks.
+After installation, there remains a few tasks to be performed:
+
+    1. Make sure the OSSL startup file is executed.
+
+    2. Check the default OpenSSL configuration file and update it
+       if necessary.
+
+    3. Running the installation verification procedure (IVP)
+
+
+This installation created the following directory structure in
+PCSI$DESTINATION (default to SYS$SYSDEVICE:[VMS$COMMON]):
+
+    [OSSL$COMMON]               The common SSL directory, contains the
+                                default OpenSSL configuration file
+    [OSSL$COMMON.CERTS]         The default certificate store
+    [OSSL$COMMON.PRIVATE]       The default private key store
+
+    [OSSL$ENGINES{- vstring2()-}]
+    [OSSL$ENGINES{- vstring2()-}32]         Default engine stores
+    [OSSL$ENGINES{- vstring2()-}64]
+
+    [OSSL$INCLUDE.OPENSSL]      Contains the C header files
+
+    [SYS$STARTUP]               Startup and shutdown command procedures
+    [SYSMGR]                    Utility definition command procedure
+    [SYSEXE]                    OSSL program 'openssl'
+    [SYSLIB]                    OSSL shareable images
+    [SYSTEST]                   IVP command procedure
+
+
+1 UPGRADE
+=prompt An upgrade from a previous OSSL version requires:
+
+That the default OpenSSL configuration file be updated as necessary,
+with the corresponding distribution file as an example.  Upgrading or
+re-installing OSSL will not overwrite or create a new version of this
+file if it has been modified, it will only create the new distribution
+file.
+
+1 START_INSTR1
+=prompt $ @SYS$STARTUP:OSSL$STARTUP.COM /SYSTEM
+1 START_INSTR2
+=prompt should be run at system startup, and
+1 START_INSTR3
+=prompt $ @SYS$STARTUP:OSSL$SHUTDOWN.COM /SYSTEM
+1 START_INSTR4
+=prompt at system shutdown
+
+When this installation is complete, add a call to OSSL$STARTUP.COM as
+shown above to SYS$MANAGER:SYSTARTUP_VMS.COM.  Similarly, add a call
+to OSSL$SHUTDOWN.COM as shown above to SYS$MANAGER:SYSHUTDWN.COM.
+
+These startup procedures will define the OSSL$ exec mode logical names
+to the SYSTEM logical name table and install the OSSL shareable images,
+and the shutdown procedure will deinstall the shareable images and
+deassign the logical names.
+
+Note: if you installed OSSL off system-disk, i.e. with
+/DESTINATION=DISK:[DIR], SYS$STARTUP: should be replaced with
+DISK:[DIR.SYS$STARTUP] in the command lines shown above.
+

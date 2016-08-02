@@ -1,0 +1,41 @@
+$	! OpenSSL Internal Verification Procedure
+$	!
+$	! This script checks the consistency of a OpenSSL installation
+$	! It had better be spawned, as it creates process logicals
+$
+$	@SYS$STARTUP:ossl$startup
+$	@SYS$STARTUP:ossl$utils
+$
+$	v := {- sprintf "%02d%02d", split(/\./, $config{version}) -}
+$
+$	i = 0
+$	l = ",32,64"
+$	loop0:
+$	    e = f$element(i, ",", l)
+$	    i = i + 1
+$	    if e .eqs. "," then goto endloop0
+$	    if f$search("SYS$SHARE:ossl$libcrypto''v'_shr''e'.EXE") .eqs. "" -
+	       .or. f$search("SYS$SHARE:ossl$libssl''v'_shr''e'.EXE") .eqs. "" -
+	       .or. f$search("SYS$LIBRARY:ossl$libcrypto''e'.OLB") .eqs. "" -
+	       .or. f$search("SYS$LIBRARY:ossl$libssl''e'.OLB") .eqs. ""
+$	    then
+$		write SYS$ERROR "Installation inconsistent"
+$		exit %x00018292 ! RMS$_FNF, file not found
+$	    endif
+$	    goto loop0
+$	endloop0:
+$	if f$search("SYS$COMMON:[ossl$include.openssl]crypto.h") .EQS. "" -
+	   .or f$search("ossl$include:[openssl]crypto.h") .EQS. "" -
+           .OR. F$SEARCH("openssl:crypto.h") .EQS. "" -
+           .OR. F$SEARCH("SYS$SYSTEM:OPENSSL''v'.EXE") .EQS. ""
+$	then
+$	    write SYS$ERROR "Installation inconsistent"
+$	    exit %x00018292 ! RMS$_FNF, file not found
+$	endif
+$
+$	! If something else is wrong with the installation, we're likely
+$	! to get an image activation error here
+$	openssl version -a
+$
+$	WRITE SYS$ERROR "OpenSSL IVP passed"
+$	EXIT %x10000001

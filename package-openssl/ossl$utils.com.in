@@ -1,0 +1,6 @@
+$	! OpenSSL package utilities
+$	!
+$
+$	v := {- sprintf "%02d%02d", split(/\./, $config{version}) -}
+$
+$	OPENSSL		:== $SYS$SYSTEM:OPENSSL'v'

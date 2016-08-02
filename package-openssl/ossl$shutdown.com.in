@@ -1,0 +1,45 @@
+$	! OpenSSL package shutdown script
+$	!
+$	! This script deinstalls the OpenSSL shared libraries and deassigns
+$	! the required logical names.  It can provide those logical names
+$	! at any level, defined by P1.
+$	!
+$	! P1	Qualifier(s) for DEFINE.  "/SYSTEM" would be typical when
+$	!	calling this script from SYS$STARTUP:SYSTARTUP_VMS.COM,
+$	!	while "/PROCESS" would be typical for a personal install.
+$	!	Default: /PROCESS
+$	!
+$	! P2	If the value is "NOALIASES", no alias logical names are
+$	!	created for the libraries.
+$
+$       INSTALL := $INSTALL
+$	DEAS := DEASSIGN /EXEC /NOLOG 'P1'
+$
+$	v := {- sprintf "%02d%02d", split(/\./, $config{version}) -}
+$	l := 'P1'
+$
+$	IF l .EQS. F$EXTRACT(0,F$LENGTH(l),"/SYSTEM")
+$	THEN
+$	    INSTALL REMOVE SYS$SHARE:OSSL$LIBCRYPTO'v'_SHR.EXE
+$	    INSTALL REMOVE SYS$SHARE:OSSL$LIBSSL'v'_SHR.EXE
+$	    INSTALL REMOVE SYS$SHARE:OSSL$LIBCRYPTO'v'_SHR32.EXE
+$	    INSTALL REMOVE SYS$SHARE:OSSL$LIBSSL'v'_SHR32.EXE
+$	    INSTALL REMOVE SYS$SHARE:OSSL$LIBCRYPTO'v'_SHR64.EXE
+$	    INSTALL REMOVE SYS$SHARE:OSSL$LIBSSL'v'_SHR64.EXE
+$	ENDIF
+$
+$	IF P2 .NES. "NOALIASES"
+$	THEN
+$	    DEAS OSSL$LIBCRYPTO_SHR
+$	    DEAS OSSL$LIBSSL_SHR
+$	    DEAS OSSL$LIBCRYPTO_SHR32
+$	    DEAS OSSL$LIBSSL_SHR32
+$	    DEAS OSSL$LIBCRYPTO_SHR64
+$	    DEAS OSSL$LIBSSL_SHR64
+$	ENDIF
+$
+$	DEAS OPENSSL
+$
+$       DEAS OSSL$DATAROOT
+$       DEAS OSSL$CERTS
+$       DEAS OSSL$PRIVATE

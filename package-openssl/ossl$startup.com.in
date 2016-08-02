@@ -1,0 +1,56 @@
+$	! OpenSSL package startup script
+$	!
+$	! This script installs the OpenSSL shared libraries and defines
+$	! the required logical names.  It can provide those logical names
+$	! at any level, defined by P1.
+$	!
+$	! P1	Qualifier(s) for DEFINE.  "/SYSTEM" would be typical when
+$	!	calling this script from SYS$STARTUP:SYSTARTUP_VMS.COM,
+$	!	while "/PROCESS" would be typical for a personal install.
+$	!	Default: /PROCESS
+$	!
+$	! P2	If the value is "NOALIASES", no alias logical names are
+$	!	created for the libraries.
+$
+$       INSTALL := $INSTALL
+$       DEF	:= DEFINE /EXEC /NOLOG 'P1'
+$	DEFT	:= DEFINE /EXEC /NOLOG /TRANSLATION=CONCEALED 'P1'
+$
+$	sv := {- sprintf "%02d%02d", $config{shlib_major}, $config{shlib_minor} -}
+$	l  := 'P1'
+$
+$	IF l .EQS. F$EXTRACT(0,F$LENGTH(l),"/SYSTEM")
+$	THEN
+$	    INSTALL ADD SYS$SHARE:OSSL$LIBCRYPTO'sv'_SHR.EXE
+$	    INSTALL ADD SYS$SHARE:OSSL$LIBSSL'sv'_SHR.EXE
+$	    INSTALL ADD SYS$SHARE:OSSL$LIBCRYPTO'sv'_SHR32.EXE
+$	    INSTALL ADD SYS$SHARE:OSSL$LIBSSL'sv'_SHR32.EXE
+$	    INSTALL ADD SYS$SHARE:OSSL$LIBCRYPTO'sv'_SHR64.EXE
+$	    INSTALL ADD SYS$SHARE:OSSL$LIBSSL'sv'_SHR64.EXE
+$	ENDIF
+$
+$	IF P2 .NES. "NOALIASES"
+$	THEN
+$	    DEF  OSSL$LIBCRYPTO_SHR	SYS$SHARE:OSSL$LIBCRYPTO'sv'_SHR.EXE
+$	    DEF  OSSL$LIBSSL_SHR	SYS$SHARE:OSSL$LIBSSL'sv'_SHR.EXE
+$	    DEF  OSSL$LIBCRYPTO_SHR32	SYS$SHARE:OSSL$LIBCRYPTO'sv'_SHR32.EXE
+$	    DEF  OSSL$LIBSSL_SHR32	SYS$SHARE:OSSL$LIBSSL'sv'_SHR32.EXE
+$	    DEF  OSSL$LIBCRYPTO_SHR64	SYS$SHARE:OSSL$LIBCRYPTO'sv'_SHR64.EXE
+$	    DEF  OSSL$LIBSSL_SHR64	SYS$SHARE:OSSL$LIBSSL'sv'_SHR64.EXE
+$	ENDIF
+$
+$       DEF  OPENSSL SYS$COMMON:[OSSL$INCLUDE.OPENSSL]
+$
+$	! The default OpenSSL configuration file is
+$	! OSSL$DATAROOT:[000000]openssl.cnf
+$	! The default location for certificates is OSSL$DATAROOT:[CERTS]
+$	! The default location for private keys is OSSL$DATAROOT:[PRIVATE]
+$       DEFT OSSL$DATAROOT	SYS$SYSDEVICE:[VMS$COMMON.OSSL$COMMON.]
+$
+$	! By default:
+$	! OSSL$LIBCRYPTO_SHR will load engines from OSSL$ENGINES:
+$	! OSSL$LIBCRYPTO_SHR32 will load engines from OSSL$ENGINES32:
+$	! OSSL$LIBCRYPTO_SHR64 will load engines from OSSL$ENGINES64:
+$	DEFT OSSL$ENGINES	SYS$SYSDEVICE:[VMS$COMMON.OSSL$ENGINES'sv'.]
+$	DEFT OSSL$ENGINES32	SYS$SYSDEVICE:[VMS$COMMON.OSSL$ENGINES'sv'32.]
+$	DEFT OSSL$ENGINES64	SYS$SYSDEVICE:[VMS$COMMON.OSSL$ENGINES'sv'64.]

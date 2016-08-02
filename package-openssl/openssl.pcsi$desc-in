@@ -1,0 +1,113 @@
+{-
+ use Config;
+ use File::Spec::Functions;
+ use File::Basename;
+
+ # The arch name that POLYCENTER uses
+ sub vms_arch {
+     my %translations = ( "VMS_VAX"  => "VAXVMS",
+                          "VMS_AXP"  => "AXPVMS",
+                          "VMS_IA64" => "I64VMS" );
+     return $translations{$Config{archname}};
+ }
+
+ # The arch as returned by F$GETSYI("ARCH_NAME")
+ sub vms_arch2 {
+     my %translations = ( "VMS_VAX"  => "VAX",
+                          "VMS_AXP"  => "Alpha",
+                          "VMS_IA64" => "IA64" );
+     return $translations{$Config{archname}};
+ }
+
+ sub vstring1 {
+     my @vattribs = split(/-/, $config{version});
+     my @vnums = split(/\./, $vattribs[0]);
+     my $type = ord 'V';
+
+     if (scalar @vattribs > 1) {
+         if ($vattribs[1] =~ m|^pre(\d+)$|) {
+             $type = 64 + $1;
+         } else {
+             $type = ord 'T';
+         }
+     }
+
+     if ($vnums[2] eq "0") {
+         return sprintf "%c%d.%d", $type, @vnums;
+     } else {
+         return sprintf "%c%d.%d-%d", $type, @vnums;
+     }
+ }
+ sub vstring2 {
+     my @vattribs = split(/-/, $config{version});
+     my @vnums = split(/\./, $vattribs[0]);
+     return sprintf "%02d%02d", @vnums;
+ }
+
+ sub public_headers {
+     my %headers = ();
+     foreach (<_kit/files/openssl-install/include/openssl/*.h>) {
+         $headers{basename $_} = 1;
+     }
+     return sort keys %headers;
+ }
+
+-}
+product Levitte {- vms_arch() -} OPENSSL {- vstring1() -} Full ;
+    if ( ( (not <software DEC {- vms_arch() -} OPENVMS version minimum V8.4>)
+           and (not <software HP {- vms_arch() -} OPENVMS version minimum V8.4>) )
+         and (not <software VSI {- vms_arch() -} OPENVMS version minimum V8.4>) ) ;
+        error NEED{- vms_arch() -}84 abort ;
+    end if ;
+
+    file [SYSEXE]OPENSSL{- vstring2() -}.EXE ;
+    file [SYSLIB]OSSL$LIBCRYPTO{- vstring2() -}_SHR.EXE ;
+    file [SYSLIB]OSSL$LIBCRYPTO{- vstring2() -}_SHR32.EXE ;
+    file [SYSLIB]OSSL$LIBCRYPTO{- vstring2() -}_SHR64.EXE ;
+    file [SYSLIB]OSSL$LIBSSL{- vstring2() -}_SHR.EXE ;
+    file [SYSLIB]OSSL$LIBSSL{- vstring2() -}_SHR32.EXE ;
+    file [SYSLIB]OSSL$LIBSSL{- vstring2() -}_SHR64.EXE ;
+    file [SYSLIB]OSSL$LIBCRYPTO.OLB ;
+    file [SYSLIB]OSSL$LIBCRYPTO32.OLB ;
+    file [SYSLIB]OSSL$LIBCRYPTO64.OLB ;
+    file [SYSLIB]OSSL$LIBSSL.OLB ;
+    file [SYSLIB]OSSL$LIBSSL32.OLB ;
+    file [SYSLIB]OSSL$LIBSSL64.OLB ;
+
+    file [OSSL$ENGINES{- vstring2() -}]DASYNC.EXE
+         source [.OPENSSL-INSTALL.ENGINES{- vstring2() -}.{- vms_arch2() -}]DASYNC.EXE ;
+    file [OSSL$ENGINES{- vstring2() -}32]DASYNC.EXE
+         source [.OPENSSL-INSTALL.ENGINES{- vstring2() -}.{- vms_arch2() -}32]DASYNC.EXE ;
+    file [OSSL$ENGINES{- vstring2() -}64]DASYNC.EXE
+         source [.OPENSSL-INSTALL.ENGINES{- vstring2() -}.{- vms_arch2() -}64]DASYNC.EXE ;
+
+    directory [OSSL$INCLUDE.OPENSSL] ;
+{- my $v = vstring2(); join("\n", map { "    file [OSSL\$INCLUDE.OPENSSL]$_ ;" } public_headers()) -}
+
+    directory [OSSL$COMMON] ;
+    directory [OSSL$COMMON.CERTS] ;
+    directory [OSSL$COMMON.PRIVATE] ;
+    file [OSSL$COMMON]openssl.cnf-dist ;
+    file [OSSL$COMMON]openssl.cnf source [OSSL$COMMON]openssl.cnf-dist write ;
+
+    file [SYS$STARTUP]ossl$startup.com ;
+    file [SYS$STARTUP]ossl$shutdown.com ;
+    file [SYSMGR]ossl$utils.com ;
+    file [SYSTEST]ossl$ivp.com ;
+
+    execute start "@sys$startup:ossl$startup"
+            stop "@sys$startup:ossl$shutdown" ;
+    execute login "$ @sys$manager:ossl$utils" ;
+    option RUN_IVP ;
+        execute test "@sys$test:ossl$ivp" ;
+    end option ;
+
+    information POST phase after with helptext ;
+    information UPGRADE phase after with helptext ;
+
+    information START_INSTR1 phase after ;
+    information START_INSTR2 phase after ;
+    information START_INSTR3 phase after ;
+    information START_INSTR4 phase after ;
+
+end product ;
