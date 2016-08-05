@@ -97,19 +97,14 @@ product Levitte {- vms_arch() -} OPENSSL {- vstring1() -} Full ;
     file [SYSMGR]ossl$utils.com ;
     file [SYSTEST]ossl$ivp.com ;
 
-    execute start "@sys$startup:ossl$startup"
-            stop "@sys$startup:ossl$shutdown" ;
-    execute login "$ @sys$manager:ossl$utils" ;
-    option RUN_IVP ;
-        execute test "@sys$test:ossl$ivp" ;
-    end option ;
-
     information POST phase after with helptext ;
     information UPGRADE phase after with helptext ;
 
-    information START_INSTR1 phase after ;
-    information START_INSTR2 phase after ;
-    information START_INSTR3 phase after ;
-    information START_INSTR4 phase after ;
+    execute start "@sys$startup:ossl$startup ""/system"""
+            stop "@sys$startup:ossl$shutdown ""/system""" ;
+    execute login "$ @sys$manager:ossl$utils" ;
+    option RUN_IVP ;
+        execute test "@pcsi$destination:[systest]ossl$ivp" ;
+    end option ;
 
 end product ;

@@ -94,35 +94,11 @@ PCSI$DESTINATION (default to SYS$SYSDEVICE:[VMS$COMMON]):
     [SYSLIB]                    OSSL shareable images
     [SYSTEST]                   IVP command procedure
 
-
 1 UPGRADE
 =prompt An upgrade from a previous OSSL version requires:
-
 That the default OpenSSL configuration file be updated as necessary,
 with the corresponding distribution file as an example.  Upgrading or
 re-installing OSSL will not overwrite or create a new version of this
 file if it has been modified, it will only create the new distribution
 file.
-
-1 START_INSTR1
-=prompt $ @SYS$STARTUP:OSSL$STARTUP.COM /SYSTEM
-1 START_INSTR2
-=prompt should be run at system startup, and
-1 START_INSTR3
-=prompt $ @SYS$STARTUP:OSSL$SHUTDOWN.COM /SYSTEM
-1 START_INSTR4
-=prompt at system shutdown
-
-When this installation is complete, add a call to OSSL$STARTUP.COM as
-shown above to SYS$MANAGER:SYSTARTUP_VMS.COM.  Similarly, add a call
-to OSSL$SHUTDOWN.COM as shown above to SYS$MANAGER:SYSHUTDWN.COM.
-
-These startup procedures will define the OSSL$ exec mode logical names
-to the SYSTEM logical name table and install the OSSL shareable images,
-and the shutdown procedure will deinstall the shareable images and
-deassign the logical names.
-
-Note: if you installed OSSL off system-disk, i.e. with
-/DESTINATION=DISK:[DIR], SYS$STARTUP: should be replaced with
-DISK:[DIR.SYS$STARTUP] in the command lines shown above.
 
