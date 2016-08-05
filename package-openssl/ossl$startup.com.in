@@ -12,14 +12,13 @@ $	!
 $	! P2	If the value is "NOALIASES", no alias logical names are
 $	!	created for the libraries.
 $
-$       INSTALL := $INSTALL
 $       DEF	:= DEFINE /EXEC /NOLOG 'P1'
 $	DEFT	:= DEFINE /EXEC /NOLOG /TRANSLATION=CONCEALED 'P1'
 $
 $	sv := {- sprintf "%02d%02d", $config{shlib_major}, $config{shlib_minor} -}
 $	l  := 'P1'
 $
-$	IF l .EQS. F$EXTRACT(0,F$LENGTH(l),"/SYSTEM")
+$	IF l .NES. "" .AND. l .EQS. F$EXTRACT(0,F$LENGTH(l),"/SYSTEM")
 $	THEN
 $	    INSTALL ADD SYS$SHARE:OSSL$LIBCRYPTO'sv'_SHR.EXE
 $	    INSTALL ADD SYS$SHARE:OSSL$LIBSSL'sv'_SHR.EXE

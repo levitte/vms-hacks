@@ -12,13 +12,12 @@ $	!
 $	! P2	If the value is "NOALIASES", no alias logical names are
 $	!	created for the libraries.
 $
-$       INSTALL := $INSTALL
 $	DEAS := DEASSIGN /EXEC /NOLOG 'P1'
 $
 $	v := {- sprintf "%02d%02d", split(/\./, $config{version}) -}
 $	l := 'P1'
 $
-$	IF l .EQS. F$EXTRACT(0,F$LENGTH(l),"/SYSTEM")
+$	IF l .NES. "" .AND. l .EQS. F$EXTRACT(0,F$LENGTH(l),"/SYSTEM")
 $	THEN
 $	    INSTALL REMOVE SYS$SHARE:OSSL$LIBCRYPTO'v'_SHR.EXE
 $	    INSTALL REMOVE SYS$SHARE:OSSL$LIBSSL'v'_SHR.EXE
