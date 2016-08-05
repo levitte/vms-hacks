@@ -46,7 +46,9 @@
 
  sub public_headers {
      my %headers = ();
-     foreach (<_kit/files/openssl-install/include/openssl/*.h>) {
+     foreach (glob
+              sprintf "_kit_%s/files/openssl-install/include/openssl/*.h",
+                      vms_arch()) {
          $headers{basename $_} = 1;
      }
      return sort keys %headers;

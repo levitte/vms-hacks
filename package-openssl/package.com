@@ -3,8 +3,9 @@ $       !
 $       ! P1 - OpenSSL source directory
 $       !
 $       ! This command procedure will create two subdirectories,
-$       ! [._build] and [._kit].  [._build] is used for OpenSSL
-$       ! builds, and [._kit] is used to build up the final kit.
+$       ! [._build_'arch'] and [._kit_'arch'].  [._build_'arch']
+$	! is used for OpenSSL builds, and [._kit_'arch'] is used
+$	! to build up the final kit.
 $
 $       ! Find the architecture
 $       IF F$GETSYI("CPU") .LT. 128
@@ -30,14 +31,14 @@ $       SET DEFAULT [.util]
 $       util = F$ENVIRONMENT("DEFAULT") - "]"
 $       SET DEFAULT 'here']
 $
-$       CREATE/DIR [._build]
-$       CREATE/DIR [._kit]
-$       CREATE/DIR [._kit.files]
+$       CREATE/DIR [._build_'arch']
+$       CREATE/DIR [._kit_'arch']
+$       CREATE/DIR [._kit_'arch'.files]
 $
-$       SET DEFAULT [._kit]
+$       SET DEFAULT [._kit_'arch']
 $       kit = F$ENVIRONMENT("DEFAULT") - "]"
 $
-$       SET DEFAULT [-._build]
+$       SET DEFAULT [-._build_'arch']
 $       build = F$ENVIRONMENT("DEFAULT")
 $
 $       @'source']config -32 shared
@@ -54,25 +55,25 @@ $
 $       purge 'kit'.files...]*.*
 $
 $       SET DEFAULT [-]
-$       perl "-I_build" "-Mconfigdata" 'source'.util]dofile.pl -
-             openssl.pcsi$desc-in > [._kit]openssl.pcsi$desc
-$       perl "-I_build" "-Mconfigdata" 'source'.util]dofile.pl -
-             openssl.pcsi$text-in > [._kit]openssl.pcsi$text
-$       perl "-I_build" "-Mconfigdata" 'source'.util]dofile.pl -
-             ossl$startup.com.in > [._kit.files]ossl$startup.com
-$       perl "-I_build" "-Mconfigdata" 'source'.util]dofile.pl -
-             ossl$utils.com.in > [._kit.files]ossl$utils.com
-$       perl "-I_build" "-Mconfigdata" 'source'.util]dofile.pl -
-             ossl$shutdown.com.in > [._kit.files]ossl$shutdown.com
-$       perl "-I_build" "-Mconfigdata" 'source'.util]dofile.pl -
-             ossl$shutdown.com.in > [._kit.files]ossl$ivp.com
+$       perl "-I_build_''arch'" "-Mconfigdata" 'source'.util]dofile.pl -
+             openssl.pcsi$desc-in > [._kit_'arch']openssl.pcsi$desc
+$       perl "-I_build_''arch'" "-Mconfigdata" 'source'.util]dofile.pl -
+             openssl.pcsi$text-in > [._kit_'arch']openssl.pcsi$text
+$       perl "-I_build_''arch'" "-Mconfigdata" 'source'.util]dofile.pl -
+             ossl$startup.com.in > [._kit_'arch'.files]ossl$startup.com
+$       perl "-I_build_''arch'" "-Mconfigdata" 'source'.util]dofile.pl -
+             ossl$utils.com.in > [._kit_'arch'.files]ossl$utils.com
+$       perl "-I_build_''arch'" "-Mconfigdata" 'source'.util]dofile.pl -
+             ossl$shutdown.com.in > [._kit_'arch'.files]ossl$shutdown.com
+$       perl "-I_build_''arch'" "-Mconfigdata" 'source'.util]dofile.pl -
+             ossl$ivp.com.in > [._kit_'arch'.files]ossl$ivp.com
 $
 $       PRODUCT PACKAGE OpenSSL -
                 /BASE='arch' -
                 /PRODUCER=Levitte -
-                /SOURCE=[._kit]openssl -
-                /DESTINATION=[._kit] -
-                /MATERIAL=([._kit.files...]) -
+                /SOURCE=[._kit_'arch']openssl -
+                /DESTINATION=[._kit_'arch'] -
+                /MATERIAL=([._kit_'arch'.files...]) -
                 /FORMAT=SEQUENTIAL
 $
 $ end:
