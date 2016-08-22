@@ -18,5 +18,5 @@ $
 $	build_snapshot_prefix    == "openssl-1.0.2-stable-SNAP-"
 $
 $	build_cmd0               == "@makevms all 'configopts' nodebug"
-$	build_cmd1              :== @[.test]tests
+$	build_cmd1               == "@[.test]tests """""""""""" 'configopts'"
 $	build_cmd2               == "@install 'installdir' 'configopts'"
