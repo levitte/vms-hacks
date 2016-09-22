@@ -11,7 +11,7 @@ $	build_config2            == "-32"
 $	build_config3            == "-64"
 $
 $	build_queue_ALPHA       :== julia_batch
-$	build_queue_IA64        :== alicia_batch
+$	build_queue_IA64        :== alikgb_batch
 $
 $	build_queue_MAIL        :== angela_batch
 $	build_queue_DISPATCH    :== angela_batch
