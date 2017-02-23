@@ -18,6 +18,7 @@ $	build_queue_DISPATCH    :== angela_batch
 $
 $	build_snapshot_prefix    == "openssl-SNAP-"
 $
+$	build_precmd            :== set proc/priv=(noall,tmpmbx,netmbx,exquota)
 $	build_cmd0               == "@'sourcedir'config 'configopts' --prefix='installdir' --openssldir='openssldir'"
 $
 $	build_cmd1              :== mms
