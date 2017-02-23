@@ -142,6 +142,12 @@ $	sourcedir = p7
 $	gosub setvars
 $
 $	execline = build_cmd'commandnum'
+$	if f$type(build_precmd) .nes. "" -
+	   then execline = build_precmd + " ; " + execline
+$	if f$type(build_postcmd) .nes. "" -
+	   then execline = execline + " ; " + build_postcmd
+$	if f$type(build_precmd) .nes. "" .or. f$type(build_postcmd) .nes. "" -
+	   then execline = "pipe ( " + execline + " )"
 $	execline := 'execline'
 $
 $	! DEBUG (visible when running with SET VERIFY):
