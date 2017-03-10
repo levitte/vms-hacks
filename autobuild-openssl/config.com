@@ -9,6 +9,8 @@ $	build_config0            == "no-shared"
 $	build_config1            == ""
 $	build_config2            == "-32"
 $	build_config3            == "-64"
+$	build_config4            == "enable-tls1_3"
+$	build_config5            == "-64 enable-tls1_3"
 $
 $	build_queue_ALPHA       :== julia_batch
 $	build_queue_IA64        :== alikgb_batch
