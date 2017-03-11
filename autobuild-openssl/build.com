@@ -68,12 +68,12 @@ $
 $	set default [.'name_us']
 $	sourcedir = f$environment("default")
 $
-$	platform_i = 0
+$	host_i = 0
 $	loop1:
-$	    platform = f$element(platform_i, " ", build_platforms)
-$	    platform_i = platform_i + 1
-$	    if platform .eqs. " " then goto endloop1
-$	    queue = build_queue_'platform'
+$	    host = f$element(host_i, " ", build_hosts)
+$	    host_i = host_i + 1
+$	    if host .eqs. " " then goto endloop1
+$	    queue = build_queue_'host'
 $	    confignum = 0
 $	    loop2:
 $		if f$type(build_config'confignum') .eqs. "" then goto endloop2
@@ -115,7 +115,7 @@ $		set on
 $
 $		submit 'this' /queue='queue' /log='thislog' -
 		       /para=('configname','queue',EXECUTE,0,-
-			      'platform','confignum','sourcedir')
+			      'host','confignum','sourcedir')
 $		confignum = confignum + 1
 $		goto loop2
 $	    endloop2:
@@ -136,7 +136,7 @@ $
 $	queue = p2
 $	state = p3
 $	commandnum = p4
-$	platform = p5
+$	host = p5
 $	confignum = p6
 $	sourcedir = p7
 $	gosub setvars
@@ -159,7 +159,7 @@ $	logfile_debug    := 'logfile'
 $	queue_debug      := 'queue'
 $	state_debug      := 'state'
 $	commandnum_debug := 'commandnum'
-$	platform_debug   := 'platform'
+$	host_debug       := 'host'
 $	confignum_debug  := 'confignum'
 $	consigopts_debug := 'configopts'
 $	execline_debug   := 'execline'
@@ -204,7 +204,7 @@ $	    submit 'this' /queue='build_queue_MAIL' /log='thislog' -
 $	else
 $	    submit 'this' /queue='queue' /log='thislog' -
 		   /para=('configname','queue',EXECUTE,'commandnum',-
-			  'platform','confignum','sourcedir')
+			  'host','confignum','sourcedir')
 $	endif
 $	goto exit
 $
@@ -220,13 +220,13 @@ $	exit !'f$verify(save_ver)
 $
 $ setvars:
 $	set default 'build_builddir'
-$	set default [.'platform'.config'confignum']
+$	set default [.'host'.config'confignum']
 $	builddir = f$environment("default")
 $
 $	if "''build_installdir'" .nes. ""
 $	then
 $	    set default 'build_installdir'
-$	    set default [.'platform'.config'confignum']
+$	    set default [.'host'.config'confignum']
 $	    installdir = f$environment("default")
 $	else
 $	    installdir :=
@@ -235,7 +235,7 @@ $
 $	if "''build_openssldir'" .nes. ""
 $	then
 $	    set default 'build_openssldir'
-$	    set default [.'platform'.config'confignum']
+$	    set default [.'host'.config'confignum']
 $	    openssldir = f$environment("default")
 $	else
 $	    openssldir :=
@@ -243,9 +243,9 @@ $	endif
 $
 $	if "''build_builddir'" .nes. ""
 $	then
-$	    logfile := 'build_builddir''platform'_config'confignum'.log
+$	    logfile := 'build_builddir''host'_config'confignum'.log
 $	else
-$	    logfile := 'sourcedir''platform'_config'confignum'.log
+$	    logfile := 'sourcedir''host'_config'confignum'.log
 $	endif
 $
 $	configopts = build_config'confignum'

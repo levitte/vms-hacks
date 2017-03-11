@@ -4,13 +4,13 @@ $	build_installdir        :== program:[levitte-builds._install102]
 $	build_report_recipient   == "levitte@openssl.org"
 $
 $	build_copysource	:== YES
-$	build_platforms         :== ALPHA IA64
+$	build_hosts             :== JULIA ALICIA
 $	build_config0            == """"""""""""""
 $	build_config1           :== 32
 $	build_config2           :== 64
 $
-$	build_queue_ALPHA       :== julia_batch
-$	build_queue_IA64        :== alicia_batch
+$	build_queue_JULIA       :== julia_batch
+$	build_queue_ALICIA      :== alicia_batch
 $
 $	build_queue_MAIL        :== angela_batch
 $	build_queue_DISPATCH    :== angela_batch
