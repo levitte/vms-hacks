@@ -7,8 +7,8 @@ $
 $	build_hosts             :== JULIA ALICIA ALIKGB
 $	build_config0            == "no-shared"
 $	build_config1            == ""
-$	build_config2            == "-32"
-$	build_config3            == "-64"
+$	build_config2            == "vms-''arch'-P32"
+$	build_config3            == "vms-''arch'-P64"
 $
 $	build_queue_JULIA       :== julia_batch
 $	build_queue_ALICIA      :== alicia_batch
@@ -20,7 +20,7 @@ $
 $	build_snapshot_prefix    == "openssl-SNAP-"
 $
 $	build_precmd            :== set proc/priv=(noall,tmpmbx,netmbx,exquota)
-$	build_cmd0               == "@'sourcedir'config 'configopts' --prefix='installdir' --openssldir='openssldir'"
+$	build_cmd0               == "perl 'sourcedir'Configure 'configopts' --prefix='installdir' --openssldir='openssldir'"
 $
 $	build_cmd1              :== mms
 $	build_cmd2              :== mms test
