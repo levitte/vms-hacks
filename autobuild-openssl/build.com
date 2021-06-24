@@ -2,6 +2,7 @@ $	save_ver = f$verify(0) ! change to 1 to get command verification
 $	here = f$environment("DEFAULT")
 $	this = f$environment("PROCEDURE")
 $	thislog = f$parse(".LOG;",this) - ";"
+$	arch = f$edit( f$getsyi( "arch_name"), "lowercase")
 $
 $	! Set up defaults
 $
