@@ -4,12 +4,14 @@ $	build_installdir        :== program:[levitte-builds._install]
 $	build_openssldir        :== program:[levitte-builds._common]
 $	build_report_recipient   == "levitte@openssl.org"
 $
-$	build_hosts             :== JULIA ALICIA ALIKGB
+$!	build_hosts             :== JULIA ALICIA ALIKGB
+$	build_hosts             :== ANGELA ALICIA ALIKGB
 $	build_config0            == "no-shared"
 $	build_config1            == ""
 $	build_config2            == "vms-''arch'-P32"
 $	build_config3            == "vms-''arch'-P64"
 $
+$	build_queue_ANGELA      :== angela_batch
 $	build_queue_JULIA       :== julia_batch
 $	build_queue_ALICIA      :== alicia_batch
 $	build_queue_ALIKGB      :== alikgb_batch
