@@ -35,7 +35,7 @@ $	    goto loop0
 $	endloop0:
 $
 $	pid = f$getjpi("","PID")
-$	wget "-O" openssl-listing-'pid'.html http://ftp.openssl.org/snapshot/
+$	curl -o openssl-listing-'pid'.html https://ftp.openssl.org/snapshot/
 $
 $	create openssl-listing-'pid'.pl
 $	DECK
@@ -59,7 +59,7 @@ $
 $	delete openssl-listing-'pid'.pl;*
 $	delete openssl-listing-'pid'.html;*
 $
-$	wget "-O" "''name_us'.tar-gz" "http://ftp.openssl.org/snapshot/''name'.tar.gz"
+$	curl -o "''name_us'.tar-gz" "https://ftp.openssl.org/snapshot/''name'.tar.gz"
 $
 $	gzip -f -d "''name_us'.tar-gz"
 $	tar -xvf "''name_us'.tar"
