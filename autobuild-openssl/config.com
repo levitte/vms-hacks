@@ -10,6 +10,7 @@ $	build_config0            == "no-shared"
 $	build_config1            == ""
 $	build_config2            == "vms-''arch'-P32"
 $	build_config3            == "vms-''arch'-P64"
+$	build_config4            == "enable-fips"
 $
 $	build_queue_ANGELA      :== angela_batch
 $	build_queue_JULIA       :== julia_batch
