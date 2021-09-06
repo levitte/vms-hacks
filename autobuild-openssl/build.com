@@ -115,7 +115,7 @@ $
 $		set on
 $
 $		submit 'this' /queue='queue' /log='thislog' -
-		       /para=('configname','queue',EXECUTE,0,-
+		       /para=('configname',"''name'",'queue',EXECUTE,0,-
 			      'host','confignum','sourcedir')
 $		confignum = confignum + 1
 $		goto loop2
@@ -134,12 +134,13 @@ $
 $ EXECUTE:
 $	set noon
 $
-$	queue = p2
-$	state = p3
-$	commandnum = p4
-$	host = p5
-$	confignum = p6
-$	sourcedir = p7
+$       name = p2
+$	queue = p3
+$	state = p4
+$	commandnum = p5
+$	host = p6
+$	confignum = p7
+$	sourcedir = p8
 $	gosub setvars
 $
 $	execline = build_cmd'commandnum'
@@ -201,10 +202,11 @@ $	set default 'here'
 $	if next_state .eqs. "REPORT"
 $	then
 $	    submit 'this' /queue='build_queue_MAIL' /log='thislog' -
-		   /para=('configname','queue',REPORT,'logfile',"''report_state': OpenSSL build of ''name' on ''arch' with config: ''configopts'")
+		   /para=('configname',"''name'",'queue',REPORT,'logfile', -
+                          "''report_state': OpenSSL build of ''name' on ''arch' with config: ''configopts'")
 $	else
 $	    submit 'this' /queue='queue' /log='thislog' -
-		   /para=('configname','queue',EXECUTE,'commandnum',-
+		   /para=('configname',"''name'",'queue',EXECUTE,'commandnum',-
 			  'host','confignum','sourcedir')
 $	endif
 $	goto exit
@@ -212,7 +214,7 @@ $
 $ bootstrap:
 $	set default 'here'
 $	submit 'this' /queue='build_queue_DISPATCH' /log='thislog' -
-	       /para=('configname','build_queue_DISPATCH',START) -
+	       /para=('configname',"''name'",'build_queue_DISPATCH',START) -
 	       /after="tomorrow+09:00"
 $	goto exit
 $
