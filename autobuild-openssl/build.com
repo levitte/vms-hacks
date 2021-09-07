@@ -16,7 +16,7 @@ $
 $	on error then goto bootstrap
 $
 $	! Possible states are: START, CONFIG, BUILD, TEST, INSTALL, REPORT
-$	state = P3
+$	state = P4
 $	if state .eqs. "" then goto exit
 $	goto 'state'
 $
@@ -126,9 +126,9 @@ $
 $	goto bootstrap
 $	
 $ REPORT: 
-$	! P4	log file
-$	! P5	subject
-$	mail 'P4' "''build_report_recipient'" /subject="''P5'"
+$	! P5	log file
+$	! P6	subject
+$	mail 'P5' "''build_report_recipient'" /subject="''P6'"
 $	goto exit
 $	
 $ EXECUTE:
@@ -214,7 +214,7 @@ $
 $ bootstrap:
 $	set default 'here'
 $	submit 'this' /queue='build_queue_DISPATCH' /log='thislog' -
-	       /para=('configname',"''name'",'build_queue_DISPATCH',START) -
+	       /para=('configname',"","",START) -
 	       /after="tomorrow+09:00"
 $	goto exit
 $
